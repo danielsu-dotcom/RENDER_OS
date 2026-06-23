@@ -1,0 +1,85 @@
+{
+  "app": {
+    "name": "Render OS"
+  },
+  "nav": {
+    "dashboard": "仪表板",
+    "newQuote": "新报价",
+    "quotes": "报价",
+    "clients": "客户",
+    "settings": "设置",
+    "signOut": "退出登录"
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "quotesAwaiting": "等待回复的报价",
+    "moneyOwed": "未收款项",
+    "dueForRebooking": "待回访 / 保修",
+    "pendingMessages": "待审核短信",
+    "noPending": "暂无待审核的短信。",
+    "connectSupabase": "连接 Supabase 后查看数据",
+    "connectSupabaseHelp": "在 .env.local 中填入 Supabase 密钥，并运行 supabase/schema.sql。"
+  },
+  "quotes": {
+    "title": "报价",
+    "newQuote": "新报价",
+    "subtitle": "一分钟内创建并发送报价。",
+    "empty": "暂无报价。",
+    "connectSupabase": "连接 Supabase 后管理报价。",
+    "subtotal": "小计",
+    "gst": "消费税 (5%)",
+    "total": "总计",
+    "send": "发送",
+    "createInvoice": "生成发票",
+    "invoiceCreated": "发票已生成",
+    "status": {
+      "draft": "草稿",
+      "sent": "已发送",
+      "accepted": "已接受",
+      "declined": "已拒绝",
+      "expired": "已过期"
+    }
+  },
+  "invoice": {
+    "title": "发票",
+    "backToQuote": "返回报价",
+    "status": {
+      "unpaid": "待付款",
+      "paid": "已付款"
+    },
+    "paymentInstructions": "付款说明",
+    "eTransfer": "请通过 Interac e-Transfer 付款至"
+  },
+  "clients": {
+    "title": "客户",
+    "empty": "暂无客户。创建报价后将显示在此处。",
+    "connectSupabase": "连接 Supabase 后管理客户。",
+    "call": "拨打",
+    "text": "发短信",
+    "language": "语言",
+    "lifetimeRevenue": "累计消费",
+    "timeline": "时间线",
+    "notes": "备注",
+    "noNotes": "暂无备注。",
+    "addNote": "添加备注",
+    "notePlaceholder": "添加备注…",
+    "backToClients": "全部客户",
+    "warranty": "有效保修",
+    "noWarranty": "暂无有效保修。",
+    "warrantyExpires": "到期",
+    "warrantyExpired": "已过期"
+  },
+  "auth": {
+    "signIn": "登录",
+    "email": "邮箱",
+    "password": "密码",
+    "signInCta": "登录",
+    "error": "登录失败，请检查邮箱和密码。"
+  },
+  "common": {
+    "loading": "加载中…",
+    "save": "保存",
+    "cancel": "取消",
+    "noDate": "无日期"
+  }
+}

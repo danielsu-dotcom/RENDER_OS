@@ -1,0 +1,85 @@
+{
+  "app": {
+    "name": "Render OS"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "newQuote": "New Quote",
+    "quotes": "Quotes",
+    "clients": "Clients",
+    "settings": "Settings",
+    "signOut": "Sign out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "quotesAwaiting": "Quotes awaiting response",
+    "moneyOwed": "Money owed",
+    "dueForRebooking": "Due for rebooking / warranty",
+    "pendingMessages": "Pending messages",
+    "noPending": "No messages awaiting approval.",
+    "connectSupabase": "Connect Supabase to see your numbers",
+    "connectSupabaseHelp": "Add your Supabase keys to .env.local and run supabase/schema.sql."
+  },
+  "quotes": {
+    "title": "Quotes",
+    "newQuote": "New Quote",
+    "subtitle": "Build a quote and send it in under a minute.",
+    "empty": "No quotes yet.",
+    "connectSupabase": "Connect Supabase to manage quotes.",
+    "subtotal": "Subtotal",
+    "gst": "GST (5%)",
+    "total": "Total",
+    "send": "Send",
+    "createInvoice": "Create Invoice",
+    "invoiceCreated": "Invoice created",
+    "status": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "expired": "Expired"
+    }
+  },
+  "invoice": {
+    "title": "Invoice",
+    "backToQuote": "Back to quote",
+    "status": {
+      "unpaid": "Unpaid",
+      "paid": "Paid"
+    },
+    "paymentInstructions": "Payment instructions",
+    "eTransfer": "Please send payment via Interac e-Transfer to"
+  },
+  "clients": {
+    "title": "Clients",
+    "empty": "No clients yet. They'll appear here once you create a quote.",
+    "connectSupabase": "Connect Supabase to manage clients.",
+    "call": "Call",
+    "text": "Text",
+    "language": "Language",
+    "lifetimeRevenue": "Lifetime revenue",
+    "timeline": "Timeline",
+    "notes": "Notes",
+    "noNotes": "No notes yet.",
+    "addNote": "Add note",
+    "notePlaceholder": "Add a note…",
+    "backToClients": "All clients",
+    "warranty": "Active warranties",
+    "noWarranty": "No active warranties.",
+    "warrantyExpires": "Expires",
+    "warrantyExpired": "Expired"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "signInCta": "Sign in",
+    "error": "Could not sign in. Check your email and password."
+  },
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "noDate": "No date"
+  }
+}

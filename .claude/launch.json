@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "render-app",
+      "runtimeExecutable": "/Users/danielyu_1/.nvm/versions/node/v24.16.0/bin/node",
+      "runtimeArgs": [
+        "/Users/danielyu_1/render-app/node_modules/next/dist/bin/next",
+        "dev",
+        "/Users/danielyu_1/render-app"
+      ],
+      "port": 3000
+    }
+  ]
+}
