@@ -50,7 +50,6 @@ export default async function LocaleLayout({
 
   const nav = [
     { href: "/", label: t("dashboard") },
-    { href: "/quotes/new", label: t("newQuote") },
     { href: "/quotes", label: t("quotes") },
     { href: "/clients", label: t("clients") },
     { href: "/settings", label: t("settings") },
