@@ -6,8 +6,7 @@ import type { Client, Locale } from "@/lib/types";
 
 export interface ClientFormData {
   name: string;
-  phone: string;
-  preferred_language: Locale;
+  phone?: string;
   email?: string;
   address?: string;
   city?: string;
@@ -38,28 +37,32 @@ export async function searchClients(query: string): Promise<Client[]> {
   return (data ?? []) as Client[];
 }
 
-/** Find existing client by E.164 phone, or create a new one. */
+/** Find existing client by phone (if provided), or create a new one. */
 export async function findOrCreateClient(
   data: ClientFormData,
 ): Promise<ClientResult | ClientError> {
   const supabase = await createSupabaseServer();
   if (!supabase) return { ok: false, error: "Database not configured." };
 
-  const phoneResult = normalizePhone(data.phone);
-  if (!phoneResult.ok || !phoneResult.e164) {
-    return { ok: false, error: phoneResult.error ?? "Invalid phone number." };
-  }
-  const e164 = phoneResult.e164;
+  let e164: string | null = null;
 
-  // Check for existing client with this phone (idempotent).
-  const { data: existing } = await supabase
-    .from("clients")
-    .select("*")
-    .eq("phone", e164)
-    .maybeSingle();
+  if (data.phone?.trim()) {
+    const phoneResult = normalizePhone(data.phone);
+    if (!phoneResult.ok || !phoneResult.e164) {
+      return { ok: false, error: phoneResult.error ?? "Invalid phone number." };
+    }
+    e164 = phoneResult.e164;
 
-  if (existing) {
-    return { ok: true, client: existing as Client, created: false };
+    // Dedup by phone when provided.
+    const { data: existing } = await supabase
+      .from("clients")
+      .select("*")
+      .eq("phone", e164)
+      .maybeSingle();
+
+    if (existing) {
+      return { ok: true, client: existing as Client, created: false };
+    }
   }
 
   const {
@@ -75,8 +78,7 @@ export async function findOrCreateClient(
       phone: e164,
       email: data.email?.trim() || null,
       address: data.address?.trim() || null,
-      city: data.city?.trim() || null,
-      preferred_language: data.preferred_language,
+      preferred_language: "en",
     })
     .select()
     .single();

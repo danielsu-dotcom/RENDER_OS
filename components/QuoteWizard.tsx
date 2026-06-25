@@ -3,9 +3,9 @@
 import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { searchClients, findOrCreateClient } from "@/lib/actions/clients";
-import { createQuote, sendQuote } from "@/lib/actions/quotes";
+import { createQuote } from "@/lib/actions/quotes";
 import { formatCents, dollarsToCents, totalsFromLineItems } from "@/lib/money";
-import type { Client, LineItem, Locale, ServiceCatalogItem } from "@/lib/types";
+import type { Client, LineItem, ServiceCatalogItem } from "@/lib/types";
 
 // ── shared styles ────────────────────────────────────────────────────────────
 const btn =
@@ -34,7 +34,8 @@ function ClientStep({
   const [mode, setMode] = useState<"search" | "create">("search");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [lang, setLang] = useState<Locale>("en");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -50,8 +51,9 @@ function ClientStep({
     startTransition(async () => {
       const res = await findOrCreateClient({
         name,
-        phone,
-        preferred_language: lang,
+        phone: phone || undefined,
+        address: address || undefined,
+        email: email || undefined,
       });
       if (!res.ok) { setError(res.error); return; }
       onSelect(res.client);
@@ -64,26 +66,19 @@ function ClientStep({
         <h2 className="font-serif text-2xl">New client</h2>
         <div>
           <label className={label}>Name</label>
-          <input className={field} value={name} onChange={e => setName(e.target.value)} placeholder="Full name" />
+          <input className={field} value={name} onChange={e => setName(e.target.value)} placeholder="Full name" autoFocus />
         </div>
         <div>
-          <label className={label}>Phone</label>
+          <label className={label}>Phone <span className="text-cream/30">optional</span></label>
           <input className={field} type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="604-555-0100" />
         </div>
         <div>
-          <label className={label}>Quote language</label>
-          <div className="flex gap-2">
-            {(["en", "zh"] as Locale[]).map(l => (
-              <button
-                key={l}
-                type="button"
-                onClick={() => setLang(l)}
-                className={`flex-1 py-3 text-sm font-medium ${lang === l ? "bg-forest text-cream" : "bg-neutral-800 text-cream/60"}`}
-              >
-                {l === "en" ? "English" : "中文"}
-              </button>
-            ))}
-          </div>
+          <label className={label}>Address <span className="text-cream/30">optional</span></label>
+          <input className={field} value={address} onChange={e => setAddress(e.target.value)} placeholder="123 Main St, Vancouver" />
+        </div>
+        <div>
+          <label className={label}>Email <span className="text-cream/30">optional</span></label>
+          <input className={field} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="client@example.com" />
         </div>
         {error && <p className="text-sm text-red-400">{error}</p>}
         <div className="flex gap-2 pt-2">
@@ -91,7 +86,7 @@ function ClientStep({
           <button
             type="button"
             className={btn}
-            disabled={!name.trim() || !phone.trim() || pending}
+            disabled={!name.trim() || pending}
             onClick={handleCreate}
           >
             {pending ? "Saving…" : "Continue →"}
@@ -121,7 +116,8 @@ function ClientStep({
                 onClick={() => onSelect(c)}
               >
                 <p className="font-medium">{c.name}</p>
-                <p className="text-sm text-charcoal/60">{c.phone}</p>
+                {c.phone && <p className="text-sm text-charcoal/60">{c.phone}</p>}
+                {c.address && <p className="text-sm text-charcoal/60">{c.address}</p>}
               </button>
             </li>
           ))}
@@ -294,16 +290,14 @@ function ReviewStep({
   client,
   items,
   onBack,
-  onSend,
-  onDraft,
+  onSave,
   pending,
   error,
 }: {
   client: Client;
   items: WizardItem[];
   onBack: () => void;
-  onSend: () => void;
-  onDraft: () => void;
+  onSave: () => void;
   pending: boolean;
   error: string | null;
 }) {
@@ -313,7 +307,9 @@ function ReviewStep({
     <div className="space-y-5">
       <div>
         <h2 className="font-serif text-2xl">Review quote</h2>
-        <p className="text-sm text-cream/60 mt-0.5">{client.name} · {client.phone}</p>
+        <p className="text-sm text-cream/60 mt-0.5">
+          {client.name}{client.phone ? ` · ${client.phone}` : ""}
+        </p>
       </div>
 
       {/* Line items */}
@@ -339,19 +335,12 @@ function ReviewStep({
         </div>
       </div>
 
-      <p className="text-xs text-cream/40">
-        Valid 30 days · SMS will be sent in {client.preferred_language === "zh" ? "Chinese" : "English"}
-      </p>
-
       {error && <p className="text-sm text-red-400">{error}</p>}
 
       <div className="flex gap-2 pt-2">
         <button type="button" className={ghost} onClick={onBack} disabled={pending}>Back</button>
-        <button type="button" className="flex-1 bg-neutral-800 px-4 py-4 text-base text-cream/70 disabled:opacity-40" onClick={onDraft} disabled={pending}>
-          Save draft
-        </button>
-        <button type="button" className={btn} onClick={onSend} disabled={pending}>
-          {pending ? "Sending…" : "Send →"}
+        <button type="button" className={btn} onClick={onSave} disabled={pending}>
+          {pending ? "Saving…" : "Save quote"}
         </button>
       </div>
     </div>
@@ -378,16 +367,12 @@ export default function QuoteWizard({
     setStep("services");
   }, []);
 
-  function save(send: boolean) {
+  function save() {
     if (!client) return;
     setError(null);
     startTransition(async () => {
       const created = await createQuote({ client_id: client.id, line_items: items });
       if (!created.ok || !created.data) { setError(created.error ?? "Failed to create quote."); return; }
-      if (send) {
-        const sent = await sendQuote(created.data.id);
-        if (!sent.ok) { setError(sent.error ?? "Quote created but SMS failed."); return; }
-      }
       router.push("/quotes");
     });
   }
@@ -419,8 +404,7 @@ export default function QuoteWizard({
           client={client}
           items={items}
           onBack={() => setStep("services")}
-          onSend={() => save(true)}
-          onDraft={() => save(false)}
+          onSave={save}
           pending={pending}
           error={error}
         />

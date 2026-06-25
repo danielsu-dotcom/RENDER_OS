@@ -34,40 +34,13 @@ export default async function QuotesPage({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-3xl">{t("title")}</h1>
-          {filterStatus && (
-            <p className="mt-0.5 text-sm text-cream/60">
-              Filtered: {ts(filterStatus)} ·{" "}
-              <Link href="/quotes" className="underline">
-                Clear
-              </Link>
-            </p>
-          )}
-        </div>
+        <h1 className="font-serif text-3xl">{t("title")}</h1>
         <Link
           href="/quotes/new"
           className="bg-forest px-4 py-2 text-sm font-medium text-cream"
         >
           + {t("newQuote")}
         </Link>
-      </div>
-
-      {/* Status filter pills */}
-      <div className="flex flex-wrap gap-2">
-        {VALID_STATUSES.map((s) => (
-          <Link
-            key={s}
-            href={`/quotes?status=${s}`}
-            className={`px-3 py-1 text-xs font-medium ${
-              filterStatus === s
-                ? "bg-forest text-cream"
-                : "bg-card text-charcoal hover:opacity-90"
-            }`}
-          >
-            {ts(s)}
-          </Link>
-        ))}
       </div>
 
       {quotes === null ? (
